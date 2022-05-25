@@ -24,11 +24,13 @@ jobs:
      id: build
      uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master
      with:
+       fuzzing-engine: 'AFL'
        oss-fuzz-project-name: 'Dvpwa'
        language: c
    - name: Run Fuzzers
      uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@master
      with:
+       fuzzing-engine: 'AFL'
        oss-fuzz-project-name: 'Dvpwa'
        language: c
        fuzz-seconds: 600
