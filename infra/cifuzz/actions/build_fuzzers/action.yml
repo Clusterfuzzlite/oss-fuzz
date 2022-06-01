@@ -2,6 +2,9 @@
 name: 'build-fuzzers'
 description: "Builds an OSS-Fuzz project's fuzzers."
 inputs:
+  engine:  
+    required: false
+    default: afl
   oss-fuzz-project-name:
     description: 'Name of the corresponding OSS-Fuzz project.'
     required: true
