@@ -36,6 +36,7 @@ runs:
   using: 'docker'
   image: '../../../build_fuzzers.Dockerfile'
   env:
+    engine: afl
     OSS_FUZZ_PROJECT_NAME: ${{ inputs.oss-fuzz-project-name }}
     LANGUAGE: ${{ inputs.language }}
     DRY_RUN: ${{ inputs.dry-run}}
