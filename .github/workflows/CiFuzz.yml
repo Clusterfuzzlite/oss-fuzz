@@ -38,5 +38,4 @@ jobs:
      if: failure() && steps.build.outcome == 'success'
      with:
        name: artifacts
-       path: ./out/artifacts
-       
+       path: ./out/artifacts     
