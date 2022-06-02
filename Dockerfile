@@ -16,7 +16,54 @@
 
 FROM gcr.io/oss-fuzz-base/base-builder
 RUN apt-get update && apt-get install -y make autoconf automake libtool libdb-dev
-RUN git clone --depth=1 https://github.com/vdukhovni/postfix Dvpwa
-WORKDIR Dvpwa
-COPY build.sh $SRC/
-COPY *.c $SRC/
+RUN apt-get install -y \
+    libc6-dev \
+    libc++-dev \
+    gcc \
+    make \
+    wget \
+    gdb \
+    llvm-dev \
+    llvm-10 \
+    clang 
+ 
+
+RUN apt-get -y install afl++
+RUN apt-get update && \
+    apt-get -y install --no-install-suggests --no-install-recommends \
+    automake \
+    cmake \
+    meson \
+    ninja-build \
+    bison flex \
+    build-essential \
+    git \
+    python3 python3-dev python3-setuptools python-is-python3 \
+    libtool libtool-bin \
+    libglib2.0-dev \
+    wget vim jupp nano bash-completion less \
+    apt-utils apt-transport-https ca-certificates gnupg dialog \
+    libpixman-1-dev \
+    gnuplot-nox \
+    && rm -rf /var/lib/apt/lists/*
+    
+RUN apt-get install -y build-essential python3-dev automake cmake git flex bison libglib2.0-dev libpixman-1-dev python3-setuptools
+# try to install llvm 10 and install the distro default if that fails
+RUN apt-get install -y llvm-10 llvm-10-dev clang-10 || apt-get install -y llvm llvm-dev clang
+RUN apt-get install -y ninja-build # for QEMU mode
+
+ENV FUZZING_ENGINE=afl
+ENV LLVM_CONFIG=llvm-config-10
+ENV AFL_SKIP_CPUFREQ=1
+ENV AFL_TRY_AFFINITY=1
+ENV AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES=1
+ENV gcc=/usr/bin/gcc.exe 
+RUN export CC=clang && export CXX=clang++
+RUN export LLVM_CONFIG=/usr/bin/llvm-config-10
+
+
+
+WORKDIR oss-fuzz
+COPY . $SRC/
+COPY .clusterfuzzlite/build.sh $SRC/
+COPY .clusterfuzzlite/imgRead.c .clusterfuzzlite/input/image.img $SRC/
